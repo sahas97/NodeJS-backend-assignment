@@ -8,17 +8,14 @@ const app = express();
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.DB_HOST);
+        await mongoose.connect(process.env.MONGODB_URI);
         console.log('Connected to MongoDB successfully');
 
         app.listen(3000, () => console.log('Server running on port 3000'));
 
     } catch (err) {
-        console.error('Errorconecting to MongoDB', err);
+        console.error('Error conecting to MongoDB', err);
     }
 };
 
 connectDB();
-// mongoose.connect('mongodb+srv://uthpalasahas:zHQ1nYmZ1UFBPksv@cluster0.kf2jxfl.mongodb.net/library?retryWrites=true&w=majority').then(result => {
-//     app.listen(3000);
-// }).catch(err => console.log(err));

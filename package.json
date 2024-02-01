@@ -2,10 +2,10 @@
   "name": "assigment",
   "version": "1.0.0",
   "description": "nodeJs assigment",
-  "main": "index.js",
+  "main": "src/sever.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon sever.js"
   },
   "author": "sahas uthpala",
   "license": "ISC",

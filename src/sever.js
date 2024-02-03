@@ -1,21 +1,28 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
-const mongoose = require('mongoose');
-
-require('dotenv').config();
+const startSever = require('../src/config/index');
+const mainRoutes = require('../src/modules/mainRouter');
+const errorHandler = require('../src/middleware/error.middleware');
 
 const app = express();
 
-const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('Connected to MongoDB successfully');
+app.use(bodyParser.json()); // application/json
 
-        app.listen(3000, () => console.log('Server running on port 3000'));
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader(
+//         'Access-Control-Allow-Methods',
+//         'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+//     );
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     next();
+// });
 
-    } catch (err) {
-        console.error('Error conecting to MongoDB', err);
-    }
-};
+// Middleware to intercept requests to /library and forward to main router
+app.use('/library', mainRoutes);
 
-connectDB();
+//Middleware to intercept errors
+app.use(errorHandler);
+
+startSever.server();

@@ -29,6 +29,6 @@ router.put('/signup', [
         .notEmpty()
 ], userController.signupUser);
 
-router.delete('/delete/:userId', userController.deleteUser);
+router.delete('/delete/:userId',isAuth, userController.deleteUser);
 
 module.exports = router;

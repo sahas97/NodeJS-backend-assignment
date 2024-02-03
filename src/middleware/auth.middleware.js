@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 module.exports = (req, res, next) => {
+    console.log('hear');
     const authHeader = req.get('Authorization');
     if (!authHeader) {
         const error = new Error('Authorization header missing!');
@@ -28,6 +29,7 @@ module.exports = (req, res, next) => {
     }
 
     req.userId = decodedtoken.userId;
-    req.type =decodedtoken.type;
+    req.emai = decodedtoken.email;
+    //req.type =decodedtoken.type;
     next();
 }

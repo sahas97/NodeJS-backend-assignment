@@ -45,7 +45,6 @@ exports.signupUser = async (req, res, next) => {
 
         //saving user object
         const ceratedUser = await user.save();
-        console.log('user');
         res.status(201).json({
             message: 'user created successfully',
             userId: ceratedUser._id
@@ -58,13 +57,7 @@ exports.signupUser = async (req, res, next) => {
         next(error);
     }
 }
-//check the userId of the logeduser is admin
-// const user = await User.findById(req.userId);
-// if (!user.type == 'admin') {
-//     const error = new Error('Can not delete, Access denied!!');
-//     error.statusCode = 403 ;
-//     throw error;
-// }
+
 
 exports.deleteUser = async (req, res, next) => {
     const errors = validationResult(req);
@@ -74,25 +67,31 @@ exports.deleteUser = async (req, res, next) => {
         const error = new Error('Validation failed');
         error.statusCode = 422;
         error.data = errors.array();
-        throw error;
+        next(error);
     }
 
     try {
+        //check the userId of the logeduser is admin
+        const user = await User.findById(req.userId);
+        if (user.type !== 'admin') {
+            const error = new Error('Can not delete, Access denied!!');
+            error.statusCode = 403 ;
+            next(error);
+        }
 
         //then delete the userbyid from users collection
         const userDoc = await User.findByIdAndDelete(userId);
         if (!userDoc) {
             const error = new Error('User not found');
             error.statusCode = 404;
-            throw error;
+            next(error);
         }
-        console.log(userDoc.authId);
         // then using ref delete authdoc by authid from auth collection
         const authdoc = await Auth.deleteOne({ _id: userDoc.authId });
         if (!authdoc) {
             const error = new Error('User not found');
             error.statusCode = 404;
-            throw error;
+            next(error);
         }
         res.status(200).json({
             message: 'User deleted successfully',
@@ -105,29 +104,3 @@ exports.deleteUser = async (req, res, next) => {
         next(error);
     }
 }
-
-// exports.deleteUser = async (req, res, next) => {
-//     const userId = req.params.userId;
-
-//     try {
-//         const userDoc = await User.findByIdAndDelete(userId);
-//         if (!userDoc) {
-//             const error = new Error('User not found');
-//             error.statusCode = 404;
-//             throw error;
-//         }
-
-//         const authdoc = await Auth.deleteOne({ authId: userDoc.authId });
-//         if (authdoc) {
-//             res.status(200).json({
-//                 message: 'User deleted successfully',
-//                 userId: userDoc._id
-//             });
-//         }
-//     } catch (error) {
-//         if (!error.statusCode) {
-//             error.statusCode = 500;
-//         }
-//         next(error); // Pass the error to the error handling middleware
-//     }
-// };

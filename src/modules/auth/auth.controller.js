@@ -13,7 +13,7 @@ exports.userLogin = async (req, res, next) => {
         const error = new Error('validation failed, entered data is incorrect.');
         error.statusCode = 422;
         error.data = errors.array();
-        throw error;
+        next(error);
     }
     const email = req.body.email;
     const password = req.body.password;
@@ -24,7 +24,7 @@ exports.userLogin = async (req, res, next) => {
         if (!auth) {
             const error = new Error('A user with this email is not Authenticated!');
             error.statusCode = 404;
-            next(error);
+           throw(error);
         }
 
         const isEqual = await bcrypt.compare(password, auth.password);
@@ -32,7 +32,7 @@ exports.userLogin = async (req, res, next) => {
         if (!isEqual) {
             const error = new Error('Wrong password.');
             error.statusCode = 401;
-            next(error);
+           throw error;
         }
 
         // find the user with that email from user collection using ref authId
@@ -40,7 +40,7 @@ exports.userLogin = async (req, res, next) => {
         if (!user) {
             const error = new Error('A user with this email not found.');
             error.statusCode = 404;
-            next(error);
+            throw error;
         }
         const token = jwt.sign({
             email: auth._id,

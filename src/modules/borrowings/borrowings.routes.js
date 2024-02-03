@@ -5,9 +5,9 @@ const isAuth = require('../../middleware/auth.middleware');
 
 const router = express.Router();
 
-const bookController = require('./book.controller');
+const borrowingController = require('./book.controller');
 
-router.post('/create', [
+router.post('/borrow', [
     body('name')
         .trim() // remove white sapaces
         .notEmpty(),

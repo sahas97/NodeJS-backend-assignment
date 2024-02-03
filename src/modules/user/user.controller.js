@@ -12,7 +12,7 @@ exports.signupUser = async (req, res, next) => {
     if (!errors.isEmpty()) {
         const error = new Error('validation failed, entered data is incorrect or duplicated.');
         error.statusCode = 422;
-        error.data = errors.array();
+        error.data = error.array();
         next(error);
     }
 
@@ -33,7 +33,7 @@ exports.signupUser = async (req, res, next) => {
         if (!authResult) {
             const error = new Error('Authentication failed');
             error.statusCode = 500;
-            next(error);
+           throw error;
         }
 
         // creating user object
@@ -73,10 +73,11 @@ exports.deleteUser = async (req, res, next) => {
     try {
         //check the userId of the logeduser is admin
         const user = await User.findById(req.userId);
+    
         if (user.type !== 'admin') {
             const error = new Error('Can not delete, Access denied!!');
             error.statusCode = 403 ;
-            next(error);
+            throw error;
         }
 
         //then delete the userbyid from users collection
@@ -84,14 +85,14 @@ exports.deleteUser = async (req, res, next) => {
         if (!userDoc) {
             const error = new Error('User not found');
             error.statusCode = 404;
-            next(error);
+            throw error;
         }
         // then using ref delete authdoc by authid from auth collection
         const authdoc = await Auth.deleteOne({ _id: userDoc.authId });
         if (!authdoc) {
             const error = new Error('User not found');
             error.statusCode = 404;
-            next(error);
+            throw error;
         }
         res.status(200).json({
             message: 'User deleted successfully',

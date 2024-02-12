@@ -1,10 +1,7 @@
 const { validationResult } = require('express-validator');
-const bcrypt = require('bcrypt');
 
 const User = require('../user/user.model');
-const Auth = require('../auth/auth.model');
 const Book = require('./books.model');
-
 
 exports.createBook = async (req, res, next) => {
     const errors = validationResult(req);

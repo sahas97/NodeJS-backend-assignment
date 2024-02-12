@@ -1,36 +1,17 @@
 const express = require('express');
-const { body } = require('express-validator');
 
 const isAuth = require('../../middleware/auth.middleware');
 
 const router = express.Router();
 
-const borrowingController = require('./book.controller');
+const borrowingController = require('./borrowings.controller');
 
-router.post('/borrow', [
-    body('name')
-        .trim() // remove white sapaces
-        .notEmpty(),
-    body('totalCopies')
-        .trim()
-        .notEmpty()
-        .isNumeric()
-        .withMessage('Please add valid Number.')
-        .custom((value) => {
-            if (parseInt(value) <= 0) {
-                throw new Error('Total copies must be greater than zero.');
-            }
-            return true;
-        }),
-    body('avaiableCopies')
-        .trim()
-        .notEmpty()
-        .isNumeric()
-        .withMessage('Please add valid Number.')
-],isAuth, bookController.createBook);
+router.get('/borrow/:bookId',isAuth, borrowingController.borrwBook);
 
-router.delete('/delete/:bookId', isAuth, bookController.deleteBook);
+router.patch('/return/:borrowId', isAuth, borrowingController.returnBook);
 
-router.get('/books', isAuth, bookController.getBooks);
+router.get('/view/user/:userId', isAuth, borrowingController.viewSelBorrows);
+
+router.get('/view/admin', isAuth, borrowingController.viewBorrows);
 
 module.exports = router;

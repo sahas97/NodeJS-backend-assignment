@@ -24,9 +24,6 @@ router.put('/signup', [
         .trim()
         .isLength({ min: 5 })
         .notEmpty(),
-    body('type')
-        .trim()
-        .notEmpty()
 ], userController.signupUser);
 
 router.delete('/delete/:userId',isAuth, userController.deleteUser);

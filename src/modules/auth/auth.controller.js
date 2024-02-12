@@ -24,7 +24,7 @@ exports.userLogin = async (req, res, next) => {
         if (!auth) {
             const error = new Error('A user with this email is not Authenticated!');
             error.statusCode = 404;
-           throw(error);
+            throw (error);
         }
 
         const isEqual = await bcrypt.compare(password, auth.password);
@@ -32,7 +32,7 @@ exports.userLogin = async (req, res, next) => {
         if (!isEqual) {
             const error = new Error('Wrong password.');
             error.statusCode = 401;
-           throw error;
+            throw error;
         }
 
         // find the user with that email from user collection using ref authId

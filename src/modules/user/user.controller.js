@@ -19,7 +19,6 @@ exports.signupUser = async (req, res, next) => {
     const email = req.body.email;
     const name = req.body.name;
     const password = req.body.password;
-    const type = req.body.type
 
     try {
         const hashPw = await bcrypt.hash(password, 16);
@@ -40,7 +39,7 @@ exports.signupUser = async (req, res, next) => {
         const user = new User({
             authId: authResult._id,
             name: name,
-            type: type
+            type: 'user' // add it as .env
         });
 
         //saving user object
@@ -60,15 +59,7 @@ exports.signupUser = async (req, res, next) => {
 
 
 exports.deleteUser = async (req, res, next) => {
-    const errors = validationResult(req);
     const userId = req.params.userId;
-
-    if (!errors.isEmpty()) {
-        const error = new Error('Validation failed');
-        error.statusCode = 422;
-        error.data = errors.array();
-        next(error);
-    }
 
     try {
         //check the userId of the logeduser is admin
